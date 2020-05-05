@@ -15,13 +15,20 @@ class RecipeDetailScreen extends StatefulWidget {
 class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
   Widget _buildRecipeInfo() {
     return Container(
+      padding: EdgeInsets.all(20.0),
       child: SingleChildScrollView(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            RecipeDetailRow(icon: Icons.access_time, context: "Cooking Time: ", recipeResult: widget.selectedRecipe.time.toStringAsFixed(0) + ' min'),
-            RecipeDetailRow(icon: Icons.face, context: "Serves: ", recipeResult: widget.selectedRecipe.servings.toStringAsFixed(0)),
-            RecipeDetailRow(icon: Icons.fastfood, context: "Calories: ", recipeResult: widget.selectedRecipe.calories.toStringAsFixed(0) + ' cal'),
-
+            RecipeDetailRow(icon: Icons.access_time, context: "Cooking Time: ", recipeResult: widget.selectedRecipe.time.toStringAsFixed(0) + ' min', color: Colors.deepOrangeAccent),
+            Divider(
+              color: Colors.black38,
+            ),
+            RecipeDetailRow(icon: Icons.face, context: "Serves: ", recipeResult: widget.selectedRecipe.servings.toStringAsFixed(0), color: Colors.purple,),
+            Divider(
+              color: Colors.black38,
+            ),
+            RecipeDetailRow(icon: Icons.fastfood, context: "Calories: ", recipeResult: widget.selectedRecipe.calories.toStringAsFixed(0) + ' cal', color: Colors.amber),
           ],
         ),
       ),
@@ -48,7 +55,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.only(top: 18.0),
               child: Text(
                 widget.selectedRecipe.recipeName,
                 style: TextStyle(
