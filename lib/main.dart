@@ -12,7 +12,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  
+
   List<Recipe> recipes;
 
   void callRecipe() async {
@@ -30,7 +30,8 @@ class _MyAppState extends State<MyApp> {
   @override
     Widget build(BuildContext context) {
       return MaterialApp(
-        home: new HomeScreen(recipes[0])
+        debugShowCheckedModeBanner: false,
+        home: new HomeScreen(recipes[0]) ?? Scaffold(),
       );
     }
 }
