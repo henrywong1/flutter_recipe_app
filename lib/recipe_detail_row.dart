@@ -6,7 +6,7 @@ class RecipeDetailRow extends StatefulWidget {
   String recipeResult;
   Color color;
 
-  RecipeDetailRow({@required this.icon, this.context, this.recipeResult, this.color});
+  RecipeDetailRow({ @required this.icon, this.context, this.recipeResult, this.color});
 
   @override
   _RecipeDetailRowState createState() => _RecipeDetailRowState();
@@ -26,7 +26,7 @@ class _RecipeDetailRowState extends State<RecipeDetailRow> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Flexible(
-                  flex: 3,
+                  flex: 4,
                   child: Container(
                     width: 40,
                     height: 40,

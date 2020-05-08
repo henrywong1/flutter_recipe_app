@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:recipeapp/recipe-service.dart';
 import 'models/recipe.dart';
-import 'package:recipeapp/recipe-detail-screen.dart';
+import 'package:recipeapp/recipe_detail_screen.dart';
 
 
 void main() => runApp(MyApp());
