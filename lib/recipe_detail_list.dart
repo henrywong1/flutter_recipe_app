@@ -42,7 +42,7 @@ class RecipeDetailList extends StatelessWidget {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20.0),
                         ),
-                        color: Colors.white,
+                        //color: Colors.white,
                         elevation: 2,
                         child: Center(
                           child: Padding(
