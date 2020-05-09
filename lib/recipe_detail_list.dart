@@ -15,58 +15,56 @@ class RecipeDetailList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height,
-      child: Column(
-        children: <Widget>[
-          Flexible(
-            flex: 1,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10.0),
-                    color: iconColor.withAlpha(100),
-                  ),
-                  child: Icon(
-                    iconData,
-                    size: 34,
-                    color: iconColor,
-                  ),
-                ),
-                Text(
-                  detailDescription,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                  ),
-                ),
-              ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10.0),
+      child: Container(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              detailDescription,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 20
+              ),
             ),
-          ),
-          Column(
-            children: recipeDetailList
-                .map(
-                  (recipeDetail) => Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                    padding: EdgeInsets.symmetric(vertical: 5.0),
-                    child: ListTile(
-                      title: Text(
-                        recipeDetail,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
+            Container(
+              height: MediaQuery.of(context).size.height / 8,
+              width: MediaQuery.of(context).size.width,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: recipeDetailList
+                    .map(
+                      (recipeDetail) => Container(
+                    child: Container(
+                      width: MediaQuery.of(context).size.width / 3,
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                        color: Colors.white,
+                        elevation: 2,
+                        child: Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              recipeDetail,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 13.0,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ),
                   ),
                 )
-                .toList(),
-          ),
-        ],
+                    .toList(),
+              ),
+            )],
+        ),
       ),
     );
   }

@@ -31,11 +31,15 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
           Divider(
             color: Colors.black38,
           ),
-          RecipeDetailRow(icon: Icons.fastfood, context: "Calories: ", recipeResult: widget.selectedRecipe.calories.toStringAsFixed(0) + ' cal', color: Colors.amber),
+          RecipeDetailList(iconData: Icons.local_dining, detailDescription: "Ingredients ", recipeDetailList: widget.selectedRecipe.ingredients, iconColor: Colors.red),
           Divider(
             color: Colors.black38,
           ),
-          RecipeDetailList(iconData: Icons.local_dining, detailDescription: "Ingredients: ", recipeDetailList: widget.selectedRecipe.ingredients, iconColor: Colors.red),
+          RecipeDetailList(iconData: Icons.local_dining, detailDescription: "Diet ", recipeDetailList: widget.selectedRecipe.dietLabel, iconColor: Colors.red),
+          Divider(
+            color: Colors.black38,
+          ),
+          RecipeDetailList(iconData: Icons.local_dining, detailDescription: "Health ", recipeDetailList: widget.selectedRecipe.healthLabel, iconColor: Colors.red),
         ],
       ),
     );
