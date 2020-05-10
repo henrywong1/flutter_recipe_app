@@ -24,7 +24,7 @@ class Recipe {
     return Recipe(
         recipeName: json['recipe']['label'],
         recipeImageUrl: json['recipe']['image'],
-        recipeUrl: json['recipe']['url'],
+        recipeUrl: json['recipe']['url'].toString().replaceAll('http:', 'https:'),
         calories: json['recipe']['calories'],
         ingredients: json['recipe']['ingredientLines'],
         servings: json['recipe']['yield'],
