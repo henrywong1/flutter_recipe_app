@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:recipeapp/recipe-service.dart';
+import 'package:recipeapp/network_service/recipe_service.dart';
 import 'package:recipeapp/models/recipe.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:recipeapp/recipe_detail_screen.dart';
-
-import '../main.dart';
+import 'package:recipeapp/screens/recipe_detail_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -15,8 +12,8 @@ class HomeScreen extends StatefulWidget {
 enum RecipeSection { BREAKFAST, LUNCH, DINNER, DESSERT }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   bool isDarkTheme = true;
+  bool dataLoaded = false;
 
   @override
   void initState() {
@@ -31,13 +28,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _fetchRecipeSections() {
     RecipeService recipeService = RecipeService();
-    breakfasts =
-        recipeService.getRecipe(_getRecipeCategory(RecipeSection.BREAKFAST), 4);
+    breakfasts = recipeService.getRecipe(_getRecipeCategory(RecipeSection.BREAKFAST), 4);
     lunch = recipeService.getRecipe(_getRecipeCategory(RecipeSection.LUNCH), 4);
-    dinner =
-        recipeService.getRecipe(_getRecipeCategory(RecipeSection.DINNER), 4);
-    dessert =
-        recipeService.getRecipe(_getRecipeCategory(RecipeSection.DESSERT), 4);
+    dinner = recipeService.getRecipe(_getRecipeCategory(RecipeSection.DINNER), 4);
+    dessert = recipeService.getRecipe(_getRecipeCategory(RecipeSection.DESSERT), 4);
   }
 
   Future<List<Recipe>> _getRecipeList(RecipeSection recipeSection) {
@@ -73,7 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
       future: _getRecipeList(recipeSection),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          // print(snapshot.data);
+          dataLoaded = true;
           int counter = 0; // counter used to display button at end of listview
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -199,11 +193,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   Row(
                     children: <Widget>[
                       IconButton(
+                        disabledColor: Colors.blueGrey[300],
                         icon: Icon(
                           Icons.lightbulb_outline,
                           size: 30,
                         ),
-                        onPressed: () => setState(() => isDarkTheme = !isDarkTheme),
+                        onPressed: () => dataLoaded ? setState(() => isDarkTheme = !isDarkTheme) : null,
                       ),
                       Expanded(
                         flex: 2,
@@ -234,7 +229,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         _buildRecipeListView(RecipeSection.DINNER),
                         _buildRecipeListView(RecipeSection.DESSERT),
                       ],
-                      physics: BouncingScrollPhysics(),
                     ),
                   ),
                 ],
@@ -244,7 +238,9 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       debugShowCheckedModeBanner: false,
-      theme: isDarkTheme ? ThemeData(brightness: Brightness.dark) : ThemeData(brightness: Brightness.light),
+      theme: isDarkTheme
+          ? ThemeData(brightness: Brightness.dark, primaryColor: Colors.white)
+          : ThemeData(brightness: Brightness.light, primaryColor: Colors.black),
     );
   }
 }

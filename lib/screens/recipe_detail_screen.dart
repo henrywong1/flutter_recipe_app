@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:recipeapp/models/recipe.dart';
-import 'package:recipeapp/recipe_detail_list.dart';
-import 'package:recipeapp/recipe_detail_row.dart';
-import 'package:recipeapp/screens/recipe_detail_view.dart';
+import 'package:recipeapp/widgets/recipe_detail_list.dart';
+import 'package:recipeapp/widgets/recipe_detail_row.dart';
+import 'package:recipeapp/screens/recipe_web_view_screen.dart';
 
 class RecipeDetailScreen extends StatefulWidget {
   final Recipe selectedRecipe;
@@ -20,44 +20,36 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          RecipeDetailRow(icon: Icons.access_time,
+          RecipeDetailRow(
+              icon: Icons.access_time,
               context: "Cooking Time: ",
-              recipeResult: widget.selectedRecipe.time.toStringAsFixed(0) +
-                  ' min',
+              recipeResult:
+                  widget.selectedRecipe.time > 0 ? widget.selectedRecipe.time.toStringAsFixed(0) + ' min' : 'N/A',
               color: Colors.deepOrangeAccent),
-          Divider(
-            color: Colors.black38,
-          ),
-          RecipeDetailRow(icon: Icons.face,
+          RecipeDetailRow(
+            icon: Icons.face,
             context: "Serves: ",
             recipeResult: widget.selectedRecipe.servings.toStringAsFixed(0),
-            color: Colors.purple,),
-          Divider(
-            color: Colors.black38,
+            color: Colors.purple,
           ),
-          RecipeDetailRow(icon: Icons.fastfood,
+          RecipeDetailRow(
+              icon: Icons.fastfood,
               context: "Calories: ",
-              recipeResult: widget.selectedRecipe.calories.toStringAsFixed(0) +
-                  ' cal',
+              recipeResult:
+                  widget.selectedRecipe.calories.toStringAsFixed(0) + ' cal',
               color: Colors.amber),
-          Divider(
-            color: Colors.black38,
-          ),
-          RecipeDetailList(iconData: Icons.local_dining,
+          RecipeDetailList(
+              iconData: Icons.local_dining,
               detailDescription: "Ingredients ",
               recipeDetailList: widget.selectedRecipe.ingredients,
               iconColor: Colors.red),
-          Divider(
-            color: Colors.black38,
-          ),
-          RecipeDetailList(iconData: Icons.local_dining,
+          RecipeDetailList(
+              iconData: Icons.local_dining,
               detailDescription: "Diet ",
               recipeDetailList: widget.selectedRecipe.dietLabel,
               iconColor: Colors.red),
-          Divider(
-            color: Colors.black38,
-          ),
-          RecipeDetailList(iconData: Icons.local_dining,
+          RecipeDetailList(
+              iconData: Icons.local_dining,
               detailDescription: "Health ",
               recipeDetailList: widget.selectedRecipe.healthLabel,
               iconColor: Colors.red),
@@ -65,7 +57,6 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
       ),
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -80,16 +71,10 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                     children: <Widget>[
                       Image(
                         fit: BoxFit.fill,
-                        width: MediaQuery
-                            .of(context)
-                            .size
-                            .width,
-                        height: MediaQuery
-                            .of(context)
-                            .size
-                            .height / 2.2,
-                        image: NetworkImage(
-                            widget.selectedRecipe.recipeImageUrl),
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height / 2.2,
+                        image:
+                            NetworkImage(widget.selectedRecipe.recipeImageUrl),
                       ),
                     ],
                   ),
@@ -98,30 +83,24 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                   padding: const EdgeInsets.only(top: 18.0),
                   child: Text(
                     widget.selectedRecipe.recipeName,
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20
-                    ),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                   ),
                 ),
                 _buildRecipeInfo(),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 28.0),
                   child: RaisedButton(
-                      color: Colors.green,
-                      child: Text(
-                          'Go To Recipe'
-                      ),
-                      onPressed: () =>
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) {
-                              return RecipeDetailView(
-                                recipeTitle: widget.selectedRecipe.recipeName,
-                                recipeUrl: widget.selectedRecipe.recipeUrl,
-                              );
-                            }),
-                          ),
+                    color: Colors.green,
+                    child: Text('Go To Recipe'),
+                    onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) {
+                        return RecipeWebViewScreen(
+                          recipeTitle: widget.selectedRecipe.recipeName,
+                          recipeUrl: widget.selectedRecipe.recipeUrl,
+                        );
+                      }),
+                    ),
                   ),
                 )
               ],

@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-class RecipeDetailView extends StatefulWidget {
+class RecipeWebViewScreen extends StatefulWidget {
   final String recipeUrl;
   final String recipeTitle;
 
-  RecipeDetailView({@required this.recipeUrl, this.recipeTitle});
+  RecipeWebViewScreen({@required this.recipeUrl, this.recipeTitle});
 
   @override
-  _RecipeDetailViewState createState() => _RecipeDetailViewState();
+  _RecipeWebViewScreenState createState() => _RecipeWebViewScreenState();
 }
 
-class _RecipeDetailViewState extends State<RecipeDetailView> {
+class _RecipeWebViewScreenState extends State<RecipeWebViewScreen> {
   @override
   Widget build(BuildContext context) {
     return WebView(
