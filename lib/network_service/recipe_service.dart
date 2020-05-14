@@ -1,5 +1,5 @@
-import 'package:recipeapp/network_request.dart';
-import 'models/recipe.dart';
+import 'package:recipeapp/network_service/network_request.dart';
+import '../models/recipe.dart';
 import 'package:recipeapp/secrets.dart';
 
 class RecipeService {
