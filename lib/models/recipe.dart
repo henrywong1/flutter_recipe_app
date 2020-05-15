@@ -2,6 +2,7 @@ class Recipe {
   String recipeName;
   String recipeImageUrl;
   String recipeUrl;
+  String recipeSource;
   double calories;
   List<dynamic> ingredients;
   double servings;
@@ -9,10 +10,13 @@ class Recipe {
   List<dynamic> healthLabel;
   List<dynamic> dietLabel;
 
+  String heroTag;
+
   Recipe(
       {this.recipeName,
       this.recipeImageUrl,
       this.recipeUrl,
+      this.recipeSource,
       this.calories,
       this.ingredients,
       this.servings,
@@ -25,6 +29,7 @@ class Recipe {
         recipeName: json['recipe']['label'],
         recipeImageUrl: json['recipe']['image'],
         recipeUrl: json['recipe']['url'].toString().replaceAll('http:', 'https:'),
+        recipeSource: json['recipe']['source'],
         calories: json['recipe']['calories'],
         ingredients: json['recipe']['ingredientLines'],
         servings: json['recipe']['yield'],

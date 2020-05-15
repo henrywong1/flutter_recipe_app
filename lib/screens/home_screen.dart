@@ -3,6 +3,7 @@ import 'package:recipeapp/network_service/recipe_service.dart';
 import 'package:recipeapp/models/recipe.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:recipeapp/screens/recipe_detail_screen.dart';
+import 'package:recipeapp/screens/search_result_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -95,7 +96,12 @@ class _HomeScreenState extends State<HomeScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           IconButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                                return SearchResultScreen(
+                                    recipeList: snapshot.data);
+                              }));
+                            },
                             icon: Icon(
                               Icons.arrow_forward,
                               size: 30.0,
@@ -108,6 +114,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       );
                     }
                     Recipe recipe = snapshot.data[index];
+                    String category = _getRecipeCategory(recipeSection);
+                    recipe.heroTag = 'recipe-img-$category-$index';
                     return Padding(
                       padding: EdgeInsets.only(right: 25.0),
                       child: Column(
@@ -124,10 +132,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                       selectedRecipe: recipe);
                                 }),
                               ),
-                              child: Image(
-                                height: MediaQuery.of(context).size.height / 4,
-                                width: MediaQuery.of(context).size.height / 4,
-                                image: NetworkImage(recipe.recipeImageUrl),
+                              child: Hero(
+                                tag: recipe.heroTag,
+                                child: Image(
+                                  height: MediaQuery.of(context).size.height / 4,
+                                  width: MediaQuery.of(context).size.height / 4,
+                                  image: NetworkImage(recipe.recipeImageUrl),
+                                ),
                               ),
                             ),
                           ),
@@ -239,8 +250,8 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       debugShowCheckedModeBanner: false,
       theme: isDarkTheme
-          ? ThemeData(brightness: Brightness.dark, primaryColor: Colors.white)
-          : ThemeData(brightness: Brightness.light, primaryColor: Colors.black),
+          ? ThemeData(brightness: Brightness.light, primaryColor: Colors.white, backgroundColor: Colors.white)
+          : ThemeData(brightness: Brightness.dark, primaryColor: Colors.black, backgroundColor: Colors.grey[850]),
     );
   }
 }
