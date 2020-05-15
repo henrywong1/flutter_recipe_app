@@ -1,14 +1,15 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:recipeapp/models/recipe.dart';
 import 'package:recipeapp/screens/recipe_detail_screen.dart';
+
 
 class SearchResultScreen extends StatelessWidget {
   final List<Recipe> recipeList;
 
   SearchResultScreen({@required this.recipeList});
 
-  Widget _buildDetailRow(int index, BuildContext context) {
+
+  Widget _buildDetailRow(int index) {
     return Padding(
       padding: const EdgeInsets.only(left: 15.0, top: 5.0, bottom: 10.0),
       child: Row(
@@ -89,7 +90,7 @@ class SearchResultScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    _buildDetailRow(index, context),
+                    _buildDetailRow(index),
                   ],
                 ),
               ),
