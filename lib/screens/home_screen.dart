@@ -15,6 +15,7 @@ enum RecipeSection { BREAKFAST, LUNCH, DINNER, DESSERT }
 class _HomeScreenState extends State<HomeScreen> {
   bool isDarkTheme = true;
   bool dataLoaded = false;
+  String searchQuery;
 
   @override
   void initState() {
@@ -27,12 +28,19 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<List<Recipe>> dinner;
   Future<List<Recipe>> dessert;
 
+  List<Recipe> recipeSearchResult;
+
+  List<List<Recipe>> recentSearchResult;
+
   void _fetchRecipeSections() {
     RecipeService recipeService = RecipeService();
-    breakfasts = recipeService.getRecipe(_getRecipeCategory(RecipeSection.BREAKFAST), 4);
+    breakfasts =
+        recipeService.getRecipe(_getRecipeCategory(RecipeSection.BREAKFAST), 4);
     lunch = recipeService.getRecipe(_getRecipeCategory(RecipeSection.LUNCH), 4);
-    dinner = recipeService.getRecipe(_getRecipeCategory(RecipeSection.DINNER), 4);
-    dessert = recipeService.getRecipe(_getRecipeCategory(RecipeSection.DESSERT), 4);
+    dinner =
+        recipeService.getRecipe(_getRecipeCategory(RecipeSection.DINNER), 4);
+    dessert =
+        recipeService.getRecipe(_getRecipeCategory(RecipeSection.DESSERT), 4);
   }
 
   Future<List<Recipe>> _getRecipeList(RecipeSection recipeSection) {
@@ -97,7 +105,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         children: <Widget>[
                           IconButton(
                             onPressed: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (context) {
                                 return SearchResultScreen(
                                     recipeList: snapshot.data);
                               }));
@@ -135,7 +144,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: Hero(
                                 tag: recipe.heroTag,
                                 child: Image(
-                                  height: MediaQuery.of(context).size.height / 4,
+                                  height:
+                                      MediaQuery.of(context).size.height / 4,
                                   width: MediaQuery.of(context).size.height / 4,
                                   image: NetworkImage(recipe.recipeImageUrl),
                                 ),
@@ -188,6 +198,16 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Future<void> _navigateToSearchResult() async {
+    RecipeService recipeService = RecipeService();
+    if (recipeSearchResult == null) {
+      recipeSearchResult = await recipeService.getRecipe(searchQuery, 15);
+    }
+    for (int i = 0; i < recipeSearchResult.length; i++) {
+      recipeSearchResult[i].heroTag = 'recipe-img-$searchQuery-$i';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -209,19 +229,35 @@ class _HomeScreenState extends State<HomeScreen> {
                           Icons.lightbulb_outline,
                           size: 30,
                         ),
-                        onPressed: () => dataLoaded ? setState(() => isDarkTheme = !isDarkTheme) : null,
+                        onPressed: () => dataLoaded
+                            ? setState(() => isDarkTheme = !isDarkTheme)
+                            : null,
                       ),
                       Expanded(
                         flex: 2,
                         child: Padding(
                           padding: const EdgeInsets.only(top: 10.0),
                           child: TextField(
-                            onChanged: (value) {},
+                            onChanged: (value) {
+                              searchQuery = value;
+                            },
                             decoration: InputDecoration(
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(30.0)),
                               hintText: 'Search for a recipe!',
-                              suffixIcon: Icon(Icons.search),
+                              suffixIcon: Builder(
+                                builder: (context) => IconButton(
+                                  icon: Icon(
+                                    Icons.search,
+                                  ),
+                                  onPressed: () async {
+                                    await _navigateToSearchResult();
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) {
+                                      return SearchResultScreen(recipeList: recipeSearchResult);
+                                    }));
+                                  },
+                                ),
+                              ),
                             ),
                           ),
                         ),
@@ -250,8 +286,14 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       debugShowCheckedModeBanner: false,
       theme: isDarkTheme
-          ? ThemeData(brightness: Brightness.light, primaryColor: Colors.white, backgroundColor: Colors.white)
-          : ThemeData(brightness: Brightness.dark, primaryColor: Colors.black, backgroundColor: Colors.grey[850]),
+          ? ThemeData(
+              brightness: Brightness.light,
+              primaryColor: Colors.white,
+              backgroundColor: Colors.white)
+          : ThemeData(
+              brightness: Brightness.dark,
+              primaryColor: Colors.black,
+              backgroundColor: Colors.grey[850]),
     );
   }
 }
