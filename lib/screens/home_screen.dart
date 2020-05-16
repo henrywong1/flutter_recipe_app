@@ -145,7 +145,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: Hero(
                                 tag: recipe.heroTag,
                                 child: Image(
-                                  height: MediaQuery.of(context).size.height / 4,
+                                  height:
+                                      MediaQuery.of(context).size.height / 4,
                                   width: MediaQuery.of(context).size.height / 4,
                                   image: NetworkImage(recipe.recipeImageUrl),
                                 ),
@@ -179,15 +180,16 @@ class _HomeScreenState extends State<HomeScreen> {
         } else if (snapshot.hasError) {
           return Text('${snapshot.error}');
         }
-        return _showSpinner(defaultDataLoaded, height: MediaQuery.of(context).size.height);
+        return _showSpinner(defaultDataLoaded,
+            height: MediaQuery.of(context).size.height);
       },
     );
   }
 
-  Container _showSpinner(bool loaded,{double height = 0}) {
+  Container _showSpinner(bool loaded, {double height = 0}) {
     if (!loaded) {
       return Container(
-        height: height  > 0 ? height / 4 : double.infinity,
+        height: height > 0 ? height / 4 : double.infinity,
         child: Center(
           child: SpinKitWave(
             itemBuilder: (BuildContext context, int index) {
@@ -208,11 +210,37 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _navigateToSearchResult() async {
     RecipeService recipeService = RecipeService();
 //    if (recipeSearchResult == null) {
-      recipeSearchResult = await recipeService.getRecipe(searchQuery, 15);
+    recipeSearchResult = await recipeService.getRecipe(searchQuery, 15);
 //    } else {}
     for (int i = 0; i < recipeSearchResult.length; i++) {
       recipeSearchResult[i].heroTag = 'recipe-img-$searchQuery-$i';
     }
+  }
+
+  Future<void> _modalPopUp(BuildContext context) async {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: Theme.of(context).backgroundColor,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(20.0))),
+            title: Center(
+              child: Text(
+                'No Result Found',
+              ),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                padding: EdgeInsets.only(bottom: 20.0, right: 20.0),
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text(
+                  'Cancel',
+                ),
+              )
+            ],
+          );
+        });
   }
 
   @override
@@ -270,15 +298,17 @@ class _HomeScreenState extends State<HomeScreen> {
                                             searchResultLoaded = true;
                                           });
                                         }
+                                        print(recipeSearchResult);
                                         if (recipeSearchResult.length > 0) {
                                           Navigator.push(context,
                                               MaterialPageRoute(
                                                   builder: (context) {
-                                                    return SearchResultScreen(
-                                                        recipeList: recipeSearchResult);
-                                                  }));
+                                            return SearchResultScreen(
+                                                recipeList: recipeSearchResult);
+                                          }));
                                         } else {
                                           // show alert dialog
+                                          _modalPopUp(context);
                                         }
                                       },
                                     ),
