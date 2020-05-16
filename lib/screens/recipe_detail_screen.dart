@@ -6,7 +6,6 @@ import 'package:recipeapp/screens/recipe_web_view_screen.dart';
 
 class RecipeDetailScreen extends StatefulWidget {
   final Recipe selectedRecipe;
-
   RecipeDetailScreen({@required this.selectedRecipe});
 
   @override
@@ -69,12 +68,15 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                 Center(
                   child: Stack(
                     children: <Widget>[
-                      Image(
-                        fit: BoxFit.fill,
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height / 2.2,
-                        image:
-                            NetworkImage(widget.selectedRecipe.recipeImageUrl),
+                      Hero(
+                        tag: widget.selectedRecipe.heroTag,
+                        child: Image(
+                          fit: BoxFit.fill,
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height / 2.2,
+                          image:
+                              NetworkImage(widget.selectedRecipe.recipeImageUrl),
+                        ),
                       ),
                     ],
                   ),
@@ -91,7 +93,13 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                   padding: const EdgeInsets.only(bottom: 28.0),
                   child: RaisedButton(
                     color: Colors.green,
-                    child: Text('Go To Recipe'),
+                    child: Text(
+                        'Go To Recipe',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                    ),
                     onPressed: () => Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) {
