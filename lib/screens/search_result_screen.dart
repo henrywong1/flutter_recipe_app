@@ -11,9 +11,9 @@ class SearchResultScreen extends StatelessWidget {
 
   Widget _buildDetailRow(int index) {
     return Padding(
-      padding: const EdgeInsets.only(left: 15.0, top: 5.0, bottom: 10.0),
+      padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
           _buildInfoContainer(Icons.whatshot, recipeList[index].calories.toStringAsFixed(0) + " CAL", Colors.orange),
           _buildInfoContainer(Icons.alarm, recipeList[index].time != 0 ? recipeList[index].time.toStringAsFixed(0) + ' MIN.' : "N/A", Colors.blueAccent),
@@ -25,21 +25,21 @@ class SearchResultScreen extends StatelessWidget {
   
   Widget _buildInfoContainer(IconData iconData, String recipeInfo, Color iconColor) {
     return Container(
-      padding: EdgeInsets.only(right: 10.0),
       child: Row(
         children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(right: 4.0),
-            child: Icon(
-              iconData,
-              color: iconColor,
-            ),
+          Icon(
+            iconData,
+            color: iconColor,
           ),
           Text(
-            recipeInfo,
+            recipeInfo.split('.')[0],
             style: TextStyle(
               fontWeight: FontWeight.w600,
+              fontSize: 12.0,
             ),
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+            softWrap: true,
           ),
         ],
       ),
