@@ -370,14 +370,8 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       debugShowCheckedModeBanner: false,
       theme: isDarkTheme
-          ? ThemeData(
-              brightness: Brightness.light,
-              primaryColor: Colors.black,
-              backgroundColor: Colors.white)
-          : ThemeData(
-              brightness: Brightness.dark,
-              primaryColor: Colors.white,
-              backgroundColor: Colors.grey[850]),
+          ? ThemeData(brightness: Brightness.light, primaryColor: Colors.black, backgroundColor: Colors.white)
+          : ThemeData(brightness: Brightness.dark, primaryColor: Colors.white, backgroundColor: Colors.grey[850]),
     );
   }
 }
