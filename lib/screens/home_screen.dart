@@ -274,43 +274,69 @@ class _HomeScreenState extends State<HomeScreen> {
                             flex: 2,
                             child: Padding(
                               padding: const EdgeInsets.only(top: 10.0),
-                              child: TextField(
-                                onChanged: (value) {
-                                  searchQuery = value;
-                                },
-                                decoration: InputDecoration(
-                                  border: OutlineInputBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(30.0)),
-                                  hintText: 'Search for a recipe!',
-                                  suffixIcon: Builder(
-                                    builder: (context) => IconButton(
-                                      icon: Icon(
-                                        Icons.search,
-                                      ),
-                                      onPressed: () async {
-                                        setState(() {
-                                          searchResultLoaded = false;
-                                        });
-                                        await _navigateToSearchResult();
-                                        if (recipeSearchResult != null) {
+                              child: Builder(
+                                builder: (context) =>
+                                TextField(
+                                  textInputAction: TextInputAction.search,
+                                  onSubmitted: (value) async {
+                                    setState(() {
+                                      searchResultLoaded = false;
+                                    });
+                                    await _navigateToSearchResult();
+                                    if (recipeSearchResult != null) {
+                                      setState(() {
+                                        searchResultLoaded = true;
+                                      });
+                                    }
+                                    if (recipeSearchResult.length > 0) {
+                                      Navigator.push(context,
+                                          MaterialPageRoute(
+                                              builder: (context) {
+                                                return SearchResultScreen(
+                                                    recipeList: recipeSearchResult);
+                                              }));
+                                    } else {
+                                      // show alert dialog
+                                      _modalPopUp(context);
+                                    }
+                                  },
+                                  onChanged: (value) {
+                                    searchQuery = value;
+                                  },
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(30.0)),
+                                    hintText: 'Search for a recipe!',
+                                    suffixIcon: Builder(
+                                      builder: (context) => IconButton(
+                                        icon: Icon(
+                                          Icons.search,
+                                        ),
+                                        onPressed: () async {
                                           setState(() {
-                                            searchResultLoaded = true;
+                                            searchResultLoaded = false;
                                           });
-                                        }
-                                        print(recipeSearchResult);
-                                        if (recipeSearchResult.length > 0) {
-                                          Navigator.push(context,
-                                              MaterialPageRoute(
-                                                  builder: (context) {
-                                            return SearchResultScreen(
-                                                recipeList: recipeSearchResult);
-                                          }));
-                                        } else {
-                                          // show alert dialog
-                                          _modalPopUp(context);
-                                        }
-                                      },
+                                          await _navigateToSearchResult();
+                                          if (recipeSearchResult != null) {
+                                            setState(() {
+                                              searchResultLoaded = true;
+                                            });
+                                          }
+                                          print(recipeSearchResult);
+                                          if (recipeSearchResult.length > 0) {
+                                            Navigator.push(context,
+                                                MaterialPageRoute(
+                                                    builder: (context) {
+                                              return SearchResultScreen(
+                                                  recipeList: recipeSearchResult);
+                                            }));
+                                          } else {
+                                            // show alert dialog
+                                            _modalPopUp(context);
+                                          }
+                                        },
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -346,11 +372,11 @@ class _HomeScreenState extends State<HomeScreen> {
       theme: isDarkTheme
           ? ThemeData(
               brightness: Brightness.light,
-              primaryColor: Colors.white,
+              primaryColor: Colors.black,
               backgroundColor: Colors.white)
           : ThemeData(
               brightness: Brightness.dark,
-              primaryColor: Colors.black,
+              primaryColor: Colors.white,
               backgroundColor: Colors.grey[850]),
     );
   }
