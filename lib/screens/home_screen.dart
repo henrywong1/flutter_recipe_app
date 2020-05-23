@@ -14,7 +14,9 @@ enum RecipeSection { BREAKFAST, LUNCH, DINNER, DESSERT }
 
 class _HomeScreenState extends State<HomeScreen> {
   bool isDarkTheme = true;
-  bool dataLoaded = false;
+  bool defaultDataLoaded = false;
+  String searchQuery;
+  bool searchResultLoaded = true;
 
   @override
   void initState() {
@@ -27,12 +29,19 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<List<Recipe>> dinner;
   Future<List<Recipe>> dessert;
 
+  List<Recipe> recipeSearchResult;
+
+  Map<String, List<Recipe>> recentSearchResults;
+
   void _fetchRecipeSections() {
     RecipeService recipeService = RecipeService();
-    breakfasts = recipeService.getRecipe(_getRecipeCategory(RecipeSection.BREAKFAST), 4);
+    breakfasts =
+        recipeService.getRecipe(_getRecipeCategory(RecipeSection.BREAKFAST), 4);
     lunch = recipeService.getRecipe(_getRecipeCategory(RecipeSection.LUNCH), 4);
-    dinner = recipeService.getRecipe(_getRecipeCategory(RecipeSection.DINNER), 4);
-    dessert = recipeService.getRecipe(_getRecipeCategory(RecipeSection.DESSERT), 4);
+    dinner =
+        recipeService.getRecipe(_getRecipeCategory(RecipeSection.DINNER), 4);
+    dessert =
+        recipeService.getRecipe(_getRecipeCategory(RecipeSection.DESSERT), 4);
   }
 
   Future<List<Recipe>> _getRecipeList(RecipeSection recipeSection) {
@@ -68,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
       future: _getRecipeList(recipeSection),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          dataLoaded = true;
+          defaultDataLoaded = true;
           int counter = 0; // counter used to display button at end of listview
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -97,7 +106,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         children: <Widget>[
                           IconButton(
                             onPressed: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (context) {
                                 return SearchResultScreen(
                                     recipeList: snapshot.data);
                               }));
@@ -135,7 +145,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: Hero(
                                 tag: recipe.heroTag,
                                 child: Image(
-                                  height: MediaQuery.of(context).size.height / 4,
+                                  height:
+                                      MediaQuery.of(context).size.height / 4,
                                   width: MediaQuery.of(context).size.height / 4,
                                   image: NetworkImage(recipe.recipeImageUrl),
                                 ),
@@ -169,23 +180,67 @@ class _HomeScreenState extends State<HomeScreen> {
         } else if (snapshot.hasError) {
           return Text('${snapshot.error}');
         }
-        return Container(
-          height: MediaQuery.of(context).size.height / 4,
-          child: Center(
-            child: SpinKitWave(
-              itemBuilder: (BuildContext context, int index) {
-                return DecoratedBox(
-                  decoration: BoxDecoration(
-                      color: index.isEven ? Colors.white54 : Colors.black38,
-                      borderRadius: BorderRadius.circular(20.0)),
-                );
-              },
-              size: 100.0,
-            ),
-          ),
-        );
+        return _showSpinner(defaultDataLoaded,
+            height: MediaQuery.of(context).size.height);
       },
     );
+  }
+
+  Container _showSpinner(bool loaded, {double height = 0}) {
+    if (!loaded) {
+      return Container(
+        height: height > 0 ? height / 4 : double.infinity,
+        child: Center(
+          child: SpinKitWave(
+            itemBuilder: (BuildContext context, int index) {
+              return DecoratedBox(
+                decoration: BoxDecoration(
+                    color: index.isEven ? Colors.white54 : Colors.black38,
+                    borderRadius: BorderRadius.circular(20.0)),
+              );
+            },
+            size: 100.0,
+          ),
+        ),
+      );
+    }
+    return Container();
+  }
+
+  Future<void> _navigateToSearchResult() async {
+    RecipeService recipeService = RecipeService();
+//    if (recipeSearchResult == null) {
+    recipeSearchResult = await recipeService.getRecipe(searchQuery, 15);
+//    } else {}
+    for (int i = 0; i < recipeSearchResult.length; i++) {
+      recipeSearchResult[i].heroTag = 'recipe-img-$searchQuery-$i';
+    }
+  }
+
+  Future<void> _modalPopUp(BuildContext context) async {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: Theme.of(context).backgroundColor,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(20.0))),
+            title: Center(
+              child: Text(
+                'No Result Found',
+              ),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                padding: EdgeInsets.only(bottom: 20.0, right: 20.0),
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text(
+                  'Cancel',
+                ),
+              )
+            ],
+          );
+        });
   }
 
   @override
@@ -196,54 +251,119 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: EdgeInsets.all(20.0),
           child: GestureDetector(
             onTap: () => FocusScope.of(context).unfocus(),
-            child: Container(
-              padding: EdgeInsets.only(top: 20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Row(
+            child: Stack(
+              children: <Widget>[
+                Container(
+                  padding: EdgeInsets.only(top: 20.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      IconButton(
-                        disabledColor: Colors.blueGrey[300],
-                        icon: Icon(
-                          Icons.lightbulb_outline,
-                          size: 30,
-                        ),
-                        onPressed: () => dataLoaded ? setState(() => isDarkTheme = !isDarkTheme) : null,
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 10.0),
-                          child: TextField(
-                            onChanged: (value) {},
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(30.0)),
-                              hintText: 'Search for a recipe!',
-                              suffixIcon: Icon(Icons.search),
+                      Row(
+                        children: <Widget>[
+                          IconButton(
+                            disabledColor: Colors.blueGrey[300],
+                            icon: Icon(
+                              Icons.lightbulb_outline,
+                              size: 30,
+                            ),
+                            onPressed: () => defaultDataLoaded
+                                ? setState(() => isDarkTheme = !isDarkTheme)
+                                : null,
+                          ),
+                          Expanded(
+                            flex: 2,
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 10.0),
+                              child: Builder(
+                                builder: (context) =>
+                                TextField(
+                                  textInputAction: TextInputAction.search,
+                                  onSubmitted: (value) async {
+                                    setState(() {
+                                      searchResultLoaded = false;
+                                    });
+                                    await _navigateToSearchResult();
+                                    if (recipeSearchResult != null) {
+                                      setState(() {
+                                        searchResultLoaded = true;
+                                      });
+                                    }
+                                    if (recipeSearchResult.length > 0) {
+                                      Navigator.push(context,
+                                          MaterialPageRoute(
+                                              builder: (context) {
+                                                return SearchResultScreen(
+                                                    recipeList: recipeSearchResult);
+                                              }));
+                                    } else {
+                                      // show alert dialog
+                                      _modalPopUp(context);
+                                    }
+                                  },
+                                  onChanged: (value) {
+                                    searchQuery = value;
+                                  },
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(30.0)),
+                                    hintText: 'Search for a recipe!',
+                                    suffixIcon: Builder(
+                                      builder: (context) => IconButton(
+                                        icon: Icon(
+                                          Icons.search,
+                                        ),
+                                        onPressed: () async {
+                                          setState(() {
+                                            searchResultLoaded = false;
+                                          });
+                                          await _navigateToSearchResult();
+                                          if (recipeSearchResult != null) {
+                                            setState(() {
+                                              searchResultLoaded = true;
+                                            });
+                                          }
+                                          print(recipeSearchResult);
+                                          if (recipeSearchResult.length > 0) {
+                                            Navigator.push(context,
+                                                MaterialPageRoute(
+                                                    builder: (context) {
+                                              return SearchResultScreen(
+                                                  recipeList: recipeSearchResult);
+                                            }));
+                                          } else {
+                                            // show alert dialog
+                                            _modalPopUp(context);
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 15.0,
+                      ),
+                      Expanded(
+                        child: ListView(
+                          padding: EdgeInsets.only(),
+                          children: <Widget>[
+                            _buildRecipeListView(RecipeSection.BREAKFAST),
+                            _buildRecipeListView(RecipeSection.LUNCH),
+                            _buildRecipeListView(RecipeSection.DINNER),
+                            _buildRecipeListView(RecipeSection.DESSERT),
+                          ],
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(
-                    height: 15.0,
-                  ),
-                  Expanded(
-                    child: ListView(
-                      padding: EdgeInsets.only(),
-                      children: <Widget>[
-                        _buildRecipeListView(RecipeSection.BREAKFAST),
-                        _buildRecipeListView(RecipeSection.LUNCH),
-                        _buildRecipeListView(RecipeSection.DINNER),
-                        _buildRecipeListView(RecipeSection.DESSERT),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+                ),
+                _showSpinner(searchResultLoaded),
+              ],
             ),
           ),
         ),

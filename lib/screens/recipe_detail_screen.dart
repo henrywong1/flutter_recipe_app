@@ -82,7 +82,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 18.0),
+                  padding: const EdgeInsets.symmetric(vertical: 18.0, horizontal: 40.0),
                   child: Text(
                     widget.selectedRecipe.recipeName,
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
