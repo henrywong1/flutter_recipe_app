@@ -59,11 +59,7 @@ class SearchResultScreen extends StatelessWidget {
             padding: EdgeInsets.only(bottom: 20.0),
             child: GestureDetector(
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(
-                    builder: (context) {
-                      return RecipeDetailScreen(
-                          selectedRecipe: recipeList[index]);
-                    }));
+                Navigator.pushNamed(context, '/details', arguments: recipeList[index]);
               },
               child: Card(
                 elevation: 10,

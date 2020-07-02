@@ -100,15 +100,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                         color: Theme.of(context).primaryColor,
                       ),
                     ),
-                    onPressed: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) {
-                        return RecipeWebViewScreen(
-                          recipeTitle: widget.selectedRecipe.recipeName,
-                          recipeUrl: widget.selectedRecipe.recipeUrl,
-                        );
-                      }),
-                    ),
+                      onPressed: () => Navigator.pushNamed(context, '/web-view', arguments: widget.selectedRecipe.recipeUrl),
                   ),
                 )
               ],

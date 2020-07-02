@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:recipeapp/network_service/recipe_service.dart';
 import 'package:recipeapp/models/recipe.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:recipeapp/routes/router_generator.dart';
 import 'package:recipeapp/screens/recipe_detail_screen.dart';
 import 'package:recipeapp/screens/search_result_screen.dart';
 
@@ -245,8 +246,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
+    return (
+      Scaffold(
         body: Padding(
           padding: EdgeInsets.all(20.0),
           child: GestureDetector(
@@ -289,12 +290,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       });
                                     }
                                     if (recipeSearchResult.length > 0) {
-                                      Navigator.push(context,
-                                          MaterialPageRoute(
-                                              builder: (context) {
-                                                return SearchResultScreen(
-                                                    recipeList: recipeSearchResult);
-                                              }));
+                                      Navigator.pushNamed(context, '/results', arguments: recipeSearchResult);
                                     } else {
                                       // show alert dialog
                                       _modalPopUp(context);
@@ -367,11 +363,10 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ),
-      ),
-      debugShowCheckedModeBanner: false,
-      theme: isDarkTheme
-          ? ThemeData(brightness: Brightness.light, primaryColor: Colors.black, backgroundColor: Colors.white)
-          : ThemeData(brightness: Brightness.dark, primaryColor: Colors.white, backgroundColor: Colors.grey[850]),
+      )
+//      theme: isDarkTheme
+//          ? ThemeData(brightness: Brightness.light, primaryColor: Colors.black, backgroundColor: Colors.white)
+//          : ThemeData(brightness: Brightness.dark, primaryColor: Colors.white, backgroundColor: Colors.grey[850]),
     );
   }
 }
