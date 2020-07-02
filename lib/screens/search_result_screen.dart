@@ -5,8 +5,8 @@ import 'package:recipeapp/screens/recipe_detail_screen.dart';
 
 class SearchResultScreen extends StatelessWidget {
   final List<Recipe> recipeList;
-
-  SearchResultScreen({@required this.recipeList});
+  final String searchTerm;
+  SearchResultScreen({@required this.recipeList, this.searchTerm});
 
 
   Widget _buildDetailRow(int index) {
@@ -55,6 +55,9 @@ class SearchResultScreen extends StatelessWidget {
       child: ListView.builder(
         itemCount: recipeList.length,
         itemBuilder: (BuildContext context, int index) {
+          if (recipeList[index].heroTag == null) {
+            recipeList[index].heroTag ='recipe-img-$searchTerm-$index';
+          }
           return Container(
             padding: EdgeInsets.only(bottom: 20.0),
             child: GestureDetector(

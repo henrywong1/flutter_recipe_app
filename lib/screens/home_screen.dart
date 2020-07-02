@@ -19,6 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String searchQuery;
   bool searchResultLoaded = true;
 
+  int homeRecipeAmount = 4;
   @override
   void initState() {
     super.initState();
@@ -36,13 +37,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _fetchRecipeSections() {
     RecipeService recipeService = RecipeService();
-    breakfasts =
-        recipeService.getRecipe(_getRecipeCategory(RecipeSection.BREAKFAST), 4);
-    lunch = recipeService.getRecipe(_getRecipeCategory(RecipeSection.LUNCH), 4);
-    dinner =
-        recipeService.getRecipe(_getRecipeCategory(RecipeSection.DINNER), 4);
-    dessert =
-        recipeService.getRecipe(_getRecipeCategory(RecipeSection.DESSERT), 4);
+    breakfasts = recipeService.getRecipe(_getRecipeCategory(RecipeSection.BREAKFAST), 20);
+    lunch = recipeService.getRecipe(_getRecipeCategory(RecipeSection.LUNCH), 20);
+    dinner = recipeService.getRecipe(_getRecipeCategory(RecipeSection.DINNER), 20);
+    dessert = recipeService.getRecipe(_getRecipeCategory(RecipeSection.DESSERT), 20);
   }
 
   Future<List<Recipe>> _getRecipeList(RecipeSection recipeSection) {
@@ -97,11 +95,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 height: MediaQuery.of(context).size.height / 3,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
-                  itemCount: counter <= snapshot.data.length
-                      ? snapshot.data.length + 1
-                      : snapshot.data.length,
+                  itemCount: homeRecipeAmount + 1,
                   itemBuilder: (context, index) {
-                    if (index == snapshot.data.length) {
+                    Recipe recipe = snapshot.data[index];
+                    String category = _getRecipeCategory(recipeSection);
+                    recipe.heroTag = 'recipe-img-$category-$index';
+                    if (index == homeRecipeAmount) {
                       return Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
@@ -110,7 +109,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               Navigator.push(context,
                                   MaterialPageRoute(builder: (context) {
                                 return SearchResultScreen(
-                                    recipeList: snapshot.data);
+                                    recipeList: snapshot.data, searchTerm: category);
                               }));
                             },
                             icon: Icon(
@@ -124,9 +123,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ],
                       );
                     }
-                    Recipe recipe = snapshot.data[index];
-                    String category = _getRecipeCategory(recipeSection);
-                    recipe.heroTag = 'recipe-img-$category-$index';
+
                     return Padding(
                       padding: EdgeInsets.only(right: 25.0),
                       child: Column(
@@ -146,8 +143,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: Hero(
                                 tag: recipe.heroTag,
                                 child: Image(
-                                  height:
-                                      MediaQuery.of(context).size.height / 4,
+                                  height: MediaQuery.of(context).size.height / 4,
                                   width: MediaQuery.of(context).size.height / 4,
                                   image: NetworkImage(recipe.recipeImageUrl),
                                 ),
