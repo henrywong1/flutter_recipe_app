@@ -1,4 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:recipeapp/routes/router_generator.dart';
 import 'screens/home_screen.dart';
 
-void main() => runApp(HomeScreen());
+
+
+void main() => runApp(MyApp());
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: HomeScreen(),
+      initialRoute: '/',
+      onGenerateRoute: RouteGenerator.generateRoute,
+      theme: ThemeData(brightness: Brightness.light, primaryColor: Colors.black, backgroundColor: Colors.white),
+    );
+
+  }
+}
