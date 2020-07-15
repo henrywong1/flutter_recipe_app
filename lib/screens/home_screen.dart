@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:recipeapp/network_service/recipe_service.dart';
 import 'package:recipeapp/models/recipe.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:recipeapp/routes/router_generator.dart';
 import 'package:recipeapp/screens/recipe_detail_screen.dart';
 import 'package:recipeapp/screens/search_result_screen.dart';
+import 'package:recipeapp/themes/app_theme.dart';
+import 'package:recipeapp/themes/theme_manager.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -246,127 +248,127 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return (
-      Scaffold(
-        body: Padding(
-          padding: EdgeInsets.all(20.0),
-          child: GestureDetector(
-            onTap: () => FocusScope.of(context).unfocus(),
-            child: Stack(
-              children: <Widget>[
-                Container(
-                  padding: EdgeInsets.only(top: 20.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          IconButton(
-                            disabledColor: Colors.blueGrey[300],
-                            icon: Icon(
-                              Icons.lightbulb_outline,
-                              size: 30,
-                            ),
-                            onPressed: () => defaultDataLoaded
-                                ? setState(() => isDarkTheme = !isDarkTheme)
-                                : null,
+    return (Scaffold(
+      body: Padding(
+        padding: EdgeInsets.all(20.0),
+        child: GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(),
+          child: Stack(
+            children: <Widget>[
+              Container(
+                padding: EdgeInsets.only(top: 20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Row(
+                      children: <Widget>[
+                        IconButton(
+                          disabledColor: Colors.blueGrey[300],
+                          icon: Icon(
+                            Icons.lightbulb_outline,
+                            size: 30,
                           ),
-                          Expanded(
-                            flex: 2,
-                            child: Padding(
-                              padding: const EdgeInsets.only(top: 10.0),
-                              child: Builder(
-                                builder: (context) =>
-                                TextField(
-                                  textInputAction: TextInputAction.search,
-                                  onSubmitted: (value) async {
+                          onPressed: () {
+                            Provider.of<ThemeManager>(context).themeData ==
+                                    appThemeData[Themes.LIGHT]
+                                ? Provider.of<ThemeManager>(context)
+                                    .setTheme(appThemeData[Themes.DARK])
+                                : Provider.of<ThemeManager>(context)
+                                    .setTheme(appThemeData[Themes.LIGHT]);
+                          },
+                        ),
+                        Expanded(
+                          flex: 2,
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 10.0),
+                            child: Builder(
+                              builder: (context) => TextField(
+                                textInputAction: TextInputAction.search,
+                                onSubmitted: (value) async {
+                                  setState(() {
+                                    searchResultLoaded = false;
+                                  });
+                                  await _navigateToSearchResult();
+                                  if (recipeSearchResult != null) {
                                     setState(() {
-                                      searchResultLoaded = false;
+                                      searchResultLoaded = true;
                                     });
-                                    await _navigateToSearchResult();
-                                    if (recipeSearchResult != null) {
-                                      setState(() {
-                                        searchResultLoaded = true;
-                                      });
-                                    }
-                                    if (recipeSearchResult.length > 0) {
-                                      Navigator.pushNamed(context, '/results', arguments: recipeSearchResult);
-                                    } else {
-                                      // show alert dialog
-                                      _modalPopUp(context);
-                                    }
-                                  },
-                                  onChanged: (value) {
-                                    searchQuery = value;
-                                  },
-                                  decoration: InputDecoration(
-                                    border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(30.0)),
-                                    hintText: 'Search for a recipe!',
-                                    suffixIcon: Builder(
-                                      builder: (context) => IconButton(
-                                        icon: Icon(
-                                          Icons.search,
-                                        ),
-                                        onPressed: () async {
-                                          setState(() {
-                                            searchResultLoaded = false;
-                                          });
-                                          await _navigateToSearchResult();
-                                          if (recipeSearchResult != null) {
-                                            setState(() {
-                                              searchResultLoaded = true;
-                                            });
-                                          }
-                                          print(recipeSearchResult);
-                                          if (recipeSearchResult.length > 0) {
-                                            Navigator.push(context,
-                                                MaterialPageRoute(
-                                                    builder: (context) {
-                                              return SearchResultScreen(
-                                                  recipeList: recipeSearchResult);
-                                            }));
-                                          } else {
-                                            // show alert dialog
-                                            _modalPopUp(context);
-                                          }
-                                        },
+                                  }
+                                  if (recipeSearchResult.length > 0) {
+                                    Navigator.pushNamed(context, '/results',
+                                        arguments: recipeSearchResult);
+                                  } else {
+                                    // show alert dialog
+                                    _modalPopUp(context);
+                                  }
+                                },
+                                onChanged: (value) {
+                                  searchQuery = value;
+                                },
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(30.0)),
+                                  hintText: 'Search for a recipe!',
+                                  suffixIcon: Builder(
+                                    builder: (context) => IconButton(
+                                      icon: Icon(
+                                        Icons.search,
                                       ),
+                                      onPressed: () async {
+                                        setState(() {
+                                          searchResultLoaded = false;
+                                        });
+                                        await _navigateToSearchResult();
+                                        if (recipeSearchResult != null) {
+                                          setState(() {
+                                            searchResultLoaded = true;
+                                          });
+                                        }
+                                        print(recipeSearchResult);
+                                        if (recipeSearchResult.length > 0) {
+                                          Navigator.push(context,
+                                              MaterialPageRoute(
+                                                  builder: (context) {
+                                            return SearchResultScreen(
+                                                recipeList: recipeSearchResult);
+                                          }));
+                                        } else {
+                                          // show alert dialog
+                                          _modalPopUp(context);
+                                        }
+                                      },
                                     ),
                                   ),
                                 ),
                               ),
                             ),
                           ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 15.0,
+                    ),
+                    Expanded(
+                      child: ListView(
+                        padding: EdgeInsets.only(),
+                        children: <Widget>[
+                          _buildRecipeListView(RecipeSection.BREAKFAST),
+                          _buildRecipeListView(RecipeSection.LUNCH),
+                          _buildRecipeListView(RecipeSection.DINNER),
+                          _buildRecipeListView(RecipeSection.DESSERT),
                         ],
                       ),
-                      SizedBox(
-                        height: 15.0,
-                      ),
-                      Expanded(
-                        child: ListView(
-                          padding: EdgeInsets.only(),
-                          children: <Widget>[
-                            _buildRecipeListView(RecipeSection.BREAKFAST),
-                            _buildRecipeListView(RecipeSection.LUNCH),
-                            _buildRecipeListView(RecipeSection.DINNER),
-                            _buildRecipeListView(RecipeSection.DESSERT),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-                _showSpinner(searchResultLoaded),
-              ],
-            ),
+              ),
+              _showSpinner(searchResultLoaded),
+            ],
           ),
         ),
-      )
-//      theme: isDarkTheme
-//          ? ThemeData(brightness: Brightness.light, primaryColor: Colors.black, backgroundColor: Colors.white)
-//          : ThemeData(brightness: Brightness.dark, primaryColor: Colors.white, backgroundColor: Colors.grey[850]),
-    );
+      ),
+    ));
   }
 }
