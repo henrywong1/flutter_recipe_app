@@ -13,6 +13,8 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
+int homeRecipeAmount = 4;
+
 enum RecipeSection { BREAKFAST, LUNCH, DINNER, DESSERT }
 
 class _HomeScreenState extends State<HomeScreen> {
@@ -38,13 +40,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _fetchRecipeSections() {
     RecipeService recipeService = RecipeService();
-    breakfasts =
-        recipeService.getRecipe(_getRecipeCategory(RecipeSection.BREAKFAST), 4);
-    lunch = recipeService.getRecipe(_getRecipeCategory(RecipeSection.LUNCH), 4);
+    breakfasts = recipeService.getRecipe(
+        _getRecipeCategory(RecipeSection.BREAKFAST), 20);
+    lunch =
+        recipeService.getRecipe(_getRecipeCategory(RecipeSection.LUNCH), 20);
     dinner =
-        recipeService.getRecipe(_getRecipeCategory(RecipeSection.DINNER), 4);
+        recipeService.getRecipe(_getRecipeCategory(RecipeSection.DINNER), 20);
     dessert =
-        recipeService.getRecipe(_getRecipeCategory(RecipeSection.DESSERT), 4);
+        recipeService.getRecipe(_getRecipeCategory(RecipeSection.DESSERT), 20);
   }
 
   Future<List<Recipe>> _getRecipeList(RecipeSection recipeSection) {
@@ -99,11 +102,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 height: MediaQuery.of(context).size.height / 3,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
-                  itemCount: counter <= snapshot.data.length
-                      ? snapshot.data.length + 1
-                      : snapshot.data.length,
+                  itemCount: homeRecipeAmount + 1,
                   itemBuilder: (context, index) {
-                    if (index == snapshot.data.length) {
+                    if (index == homeRecipeAmount) {
                       return Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
