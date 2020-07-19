@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:recipeapp/models/recipe.dart';
 import 'package:recipeapp/widgets/recipe_detail_list.dart';
 import 'package:recipeapp/widgets/recipe_detail_row.dart';
-import 'package:recipeapp/screens/recipe_web_view_screen.dart';
 
 class RecipeDetailScreen extends StatefulWidget {
   final Recipe selectedRecipe;
@@ -22,8 +21,9 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
           RecipeDetailRow(
               icon: Icons.access_time,
               context: "Cooking Time: ",
-              recipeResult:
-                  widget.selectedRecipe.time > 0 ? widget.selectedRecipe.time.toStringAsFixed(0) + ' min' : 'N/A',
+              recipeResult: widget.selectedRecipe.time > 0
+                  ? widget.selectedRecipe.time.toStringAsFixed(0) + ' min'
+                  : 'N/A',
               color: Colors.deepOrangeAccent),
           RecipeDetailRow(
             icon: Icons.face,
@@ -74,15 +74,16 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                           fit: BoxFit.fill,
                           width: MediaQuery.of(context).size.width,
                           height: MediaQuery.of(context).size.height / 2.2,
-                          image:
-                              NetworkImage(widget.selectedRecipe.recipeImageUrl),
+                          image: NetworkImage(
+                              widget.selectedRecipe.recipeImageUrl),
                         ),
                       ),
                     ],
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 18.0, horizontal: 40.0),
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 18.0, horizontal: 40.0),
                   child: Text(
                     widget.selectedRecipe.recipeName,
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
@@ -94,13 +95,14 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                   child: RaisedButton(
                     color: Colors.green,
                     child: Text(
-                        'Go To Recipe',
+                      'Go To Recipe',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Theme.of(context).primaryColor,
                       ),
                     ),
-                      onPressed: () => Navigator.pushNamed(context, '/web-view', arguments: widget.selectedRecipe.recipeUrl),
+                    onPressed: () => Navigator.pushNamed(context, '/web-view',
+                        arguments: widget.selectedRecipe.recipeUrl),
                   ),
                 )
               ],

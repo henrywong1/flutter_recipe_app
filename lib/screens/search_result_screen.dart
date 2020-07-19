@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:recipeapp/models/recipe.dart';
-import 'package:recipeapp/screens/recipe_detail_screen.dart';
-
 
 class SearchResultScreen extends StatelessWidget {
   final List<Recipe> recipeList;
   final String searchTerm;
   SearchResultScreen({@required this.recipeList, this.searchTerm});
-
 
   Widget _buildDetailRow(int index) {
     return Padding(
@@ -15,15 +12,25 @@ class SearchResultScreen extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
-          _buildInfoContainer(Icons.whatshot, recipeList[index].calories.toStringAsFixed(0) + " CAL", Colors.orange),
-          _buildInfoContainer(Icons.alarm, recipeList[index].time != 0 ? recipeList[index].time.toStringAsFixed(0) + ' MIN.' : "N/A", Colors.blueAccent),
-          _buildInfoContainer(Icons.people, recipeList[index].recipeSource, Colors.green),
+          _buildInfoContainer(
+              Icons.whatshot,
+              recipeList[index].calories.toStringAsFixed(0) + " CAL",
+              Colors.orange),
+          _buildInfoContainer(
+              Icons.alarm,
+              recipeList[index].time != 0
+                  ? recipeList[index].time.toStringAsFixed(0) + ' MIN.'
+                  : "N/A",
+              Colors.blueAccent),
+          _buildInfoContainer(
+              Icons.people, recipeList[index].recipeSource, Colors.green),
         ],
       ),
     );
   }
-  
-  Widget _buildInfoContainer(IconData iconData, String recipeInfo, Color iconColor) {
+
+  Widget _buildInfoContainer(
+      IconData iconData, String recipeInfo, Color iconColor) {
     return Container(
       child: Row(
         children: <Widget>[
@@ -45,7 +52,6 @@ class SearchResultScreen extends StatelessWidget {
       ),
     );
   }
-  
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +68,8 @@ class SearchResultScreen extends StatelessWidget {
             padding: EdgeInsets.only(bottom: 20.0),
             child: GestureDetector(
               onTap: () {
-                Navigator.pushNamed(context, '/details', arguments: recipeList[index]);
+                Navigator.pushNamed(context, '/details',
+                    arguments: recipeList[index]);
               },
               child: Card(
                 elevation: 10,
